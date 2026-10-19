@@ -35,9 +35,21 @@ cmake --build build --parallel
 The `Makefile` wraps the same steps: `make`, `make run ARGS="--color blue"`,
 `make test`, `make debug` (sanitizers + warnings as errors) and `make clean`.
 
-`cmake --install build` installs the binary and the font; the font is also
-found automatically next to the executable, in `Assets/` of the source tree
-and in the current directory.
+### Installing
+
+```sh
+make install                                              # /usr/local (needs sudo on macOS and Linux)
+make install CMAKE_ARGS="-DCMAKE_INSTALL_PREFIX=$HOME/.local"   # per-user, no sudo
+```
+
+This installs `bin/cuby` and `share/cuby/font.ttf` under the prefix. The font
+is also found automatically next to the executable, in `Assets/` of the
+source tree and in the current directory, so `./build/cuby` works without
+installing.
+
+macOS: the build is tested in CI on Apple Silicon runners with Homebrew's
+`sdl2` and `sdl2_ttf`; nothing in the code is architecture specific, so Intel
+and Apple Silicon Macs both work with the commands above.
 
 ### Usage
 
