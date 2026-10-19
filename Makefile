@@ -1,44 +1,39 @@
 ##
-## Makefile for  in /home/costardrouge
+## Convenience wrapper around the CMake build.
 ##
-## Made by steeve pommier
-## Login   <costardrouge@epitech.net>
+##   make            build (Release) into ./build
+##   make run        build then start cuby (pass options with ARGS="...")
+##   make test       build then run the unit and headless smoke tests
+##   make debug      build with sanitizers and warnings as errors
+##   make clean      remove the build directory
 ##
-## Started on  Mon Mar 12 12:12:36 2012 steeve pommier
-## Last update Sun Apr 15 15:01:27 2012 steeve pommier
-##
 
-NAME_EXE	=	cuby
+BUILD_DIR	?=	build
+BUILD_TYPE	?=	Release
+CMAKE_ARGS	?=
+ARGS		?=
 
-SRC_EXE		=	AObject.cpp  		\
-				Block.cpp   		\
-				Cuby.cpp        	\
-				Exception.cpp		\
-				Ressources.cpp  	\
-				SDLDisplay.cpp  	\
-				ASection.cpp  		\
-				Colors.cpp  		\
-				CubyHelper.cpp  	\
-				FPS.cpp  			\
-				ScreenSaver.cpp  	\
-				Settings.cpp
+.PHONY: all build run test debug install clean re
 
-OBJ_EXE		=	$(SRC_EXE:.cpp=.o)
+all:		build
 
-LDFLAGS		+=	-lSDL -lSDL_ttf -lfreetype -lSDL_image `sdl-config --libs`
-CXXFLAGS	+=	-std=gnu++0x
+build:
+		cmake -S . -B $(BUILD_DIR) -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) $(CMAKE_ARGS)
+		cmake --build $(BUILD_DIR) --parallel
 
-CXX		=	g++
+run:		build
+		./$(BUILD_DIR)/cuby $(ARGS)
 
-all:		$(NAME_LIB) $(NAME_LIB2) $(NAME_LIB3) $(NAME_EXE)
+test:		build
+		ctest --test-dir $(BUILD_DIR) --output-on-failure
 
-$(NAME_EXE):	$(OBJ_EXE)
-		$(CXX) -o $(NAME_EXE) $(OBJ_EXE) $(LDFLAGS)
+debug:
+		$(MAKE) build BUILD_TYPE=Debug CMAKE_ARGS="-DCUBY_SANITIZE=ON -DCUBY_WARNINGS_AS_ERRORS=ON $(CMAKE_ARGS)"
+
+install:	build
+		cmake --install $(BUILD_DIR)
 
 clean:
-		rm -f  $(OBJ_EXE)
+		rm -rf $(BUILD_DIR)
 
-fclean:		clean
-		rm -f $(NAME_EXE)
-
-re:		fclean all
+re:		clean all

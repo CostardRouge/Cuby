@@ -1,15 +1,30 @@
-# Compiled Object files
-*.slo
-*.lo
+# Build output
+build/
+build-*/
+cmake-build-*/
+out/
+CMakeCache.txt
+CMakeFiles/
+compile_commands.json
 *.o
-
-# Compiled Dynamic libraries
+*.obj
+*.a
+*.lib
 *.so
 *.dylib
+*.dll
+*.exe
+cuby
+cuby_tests
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+*.swp
+*.user
+*.suo
 
+# OS
 .DS_Store
+Thumbs.db
